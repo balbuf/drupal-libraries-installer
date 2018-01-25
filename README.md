@@ -13,6 +13,22 @@ external dependencies for a Drupal site in a single place: the `composer.json` f
     composer require balbuf/drupal-libraries-installer
     ```
 
+1. Add libraries to your composer.json file via the `drupal-libraries` property
+within `extra`. A library is specified using its name as the key and a URL to its
+distribution ZIP file as the value:
+
+    ```json
+    {
+        "extra": {
+            "drupal-libraries": {
+                "flexslider": "https://github.com/woocommerce/FlexSlider/archive/2.6.4.zip",
+                "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.8.2/chosen_v1.8.2.zip"
+            }
+        }
+    }
+    ```
+    _See below for how to find the ZIP URL for a GitHub repo._
+
 1. Ensure composer packages of type `drupal-library` are configured to install to the
 appropriate path. By default, [`composer/installers`][installers] (a dependency of
 this plugin and likely already included in your project) will install these packages
@@ -31,23 +47,6 @@ the `installer-paths` property (within `extra`) of your `composer.json`:
 
     _See the `composer/installers` [README][installers readme] for more information on
     the `installer-paths` property._
-
-1. Add libraries to your composer.json file via the `drupal-libraries` property
-within `extra`. A library is specified using its name as the key (populated as
-the `{$name}` replacement token of the install path) and a URL to its distribution
-ZIP file as the value:
-
-    ```json
-    {
-        "extra": {
-            "drupal-libraries": {
-                "flexslider": "https://github.com/woocommerce/FlexSlider/archive/2.6.4.zip",
-                "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.8.2/chosen_v1.8.2.zip"
-            }
-        }
-    }
-    ```
-    _See below for how to find the ZIP URL for a GitHub repo._
 
 1. Run `composer install`. Libraries are downloaded and unpacked into place upon running
 `composer install` or `composer update`. (To upgrade a library, simply swap out its URL
