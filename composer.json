@@ -1,0 +1,25 @@
+{
+    "name": "balbuf/drupal-libraries-installer",
+    "description": "Install Drupal libraries via a simple listing in your composer.json file",
+    "type": "composer-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stephen Beemsterboer",
+            "homepage": "https://github.com/balbuf"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/balbuf/drupal-libraries-installer/issues"
+    },
+    "autoload": {
+        "psr-4": {"BalBuf\\DrupalLibrariesInstaller\\": "src/"}
+    },
+    "extra": {
+        "class": "BalBuf\\DrupalLibrariesInstaller\\Plugin"
+    },
+    "require": {
+        "composer-plugin-api": "^1.0",
+        "composer/installers": "^1.5"
+    }
+}
