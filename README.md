@@ -13,7 +13,7 @@ external dependencies for a Drupal site in a single place: the `composer.json` f
     composer require balbuf/drupal-libraries-installer
     ```
 
-1. Add libraries to your composer.json file via the `drupal-libraries` property
+1. Add libraries to your `composer.json` file via the `drupal-libraries` property
 within `extra`. A library is specified using its name as the key and a URL to its
 distribution ZIP file as the value:
 
