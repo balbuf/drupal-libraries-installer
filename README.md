@@ -14,19 +14,68 @@ external dependencies for a Drupal site in a single place: the `composer.json` f
     ```
 
 1. Add libraries to your `composer.json` file via the `drupal-libraries` property
-within `extra`. A library is specified using its name as the key and a URL to its
-distribution ZIP file as the value:
+within `extra`. A library is specified using its name as the key and a URL to 
+its distribution ZIP/RAR/TAR/TGZ/TAR.GZ/TAR.BZ2 file as the value.
+It'll attempt to guess the library type from the URL.
+If the file is not a ZIP file, then the URL must end with the file extension:
 
     ```json
     {
         "extra": {
             "drupal-libraries": {
+                "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.8.2/chosen_v1.8.2.zip",
                 "flexslider": "https://github.com/woocommerce/FlexSlider/archive/2.6.4.zip",
-                "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.8.2/chosen_v1.8.2.zip"
+                "moment": "https://registry.npmjs.org/moment/-/moment-2.25.0.tgz"
             }
         }
     }
     ```
+
+    Or alternatively if you want to specify a more detailed definition:
+
+    ```json
+    {
+        "extra": {
+            "drupal-libraries": {
+                "chosen": {
+                    "url": "https://github.com/harvesthq/chosen/releases/download/v1.8.2/chosen_v1.8.2.zip"
+                },
+                "flexslider": {
+                    "url": "https://github.com/woocommerce/FlexSlider/archive/2.6.4.zip",
+                    "version": "2.6.4",
+                    "type": "zip",
+                    "ignore": ["bower_components", "demo", "node_modules"]
+                },
+                "moment": {
+                    "url": "https://registry.npmjs.org/moment/-/moment-2.25.0.tgz",
+                    "shasum": "e961ab9a5848a1cf2c52b1af4e6c82a8401e7fe9"
+                },
+                "select2": {
+                     "url": "https://github.com/select2/select2/archive/4.0.13.zip",
+                     "ignore": [
+                         ".*",
+                         "*.{md}",
+                         "Gruntfile.js",
+                         "{docs,src,tests}"
+                     ]
+                },
+                "custom-tar-asset": {
+                    "url": "https://assets.custom-url.com/unconventional/url/path",
+                    "type": "tar",
+                    "ignore": [".*", "*.{txt,md}"]
+                }
+            }
+        }
+    }
+    ```
+
+   Where the configuration options are as follows:
+   - `url`: The library URL (mandatory).
+   - `version`: The version of the library (defaults to `1.0.0`).
+   - `type`: The type of library archive, one of (zip, tar, rar, gzip), support depends on your composer version (defaults to `zip`). 
+   - `ignore`: Array of folders/file globs to remove from the library (defaults to `[]`). See [PSA-2011-002](https://www.drupal.org/node/1189632).
+   - `shasum`: The SHA1 hash of the asset (optional).
+
     _See below for how to find the ZIP URL for a GitHub repo._
 
 1. Ensure composer packages of type `drupal-library` are configured to install to the
@@ -51,6 +100,45 @@ the `installer-paths` property (within `extra`) of your `composer.json`:
 1. Run `composer install`. Libraries are downloaded and unpacked into place upon running
 `composer install` or `composer update`. (To upgrade a library, simply swap out its URL
 in your `composer.json` file and run `composer install` again.)
+
+## Installing libraries declared by other packages.
+
+Set the `drupal-libraries-dependencies` extra property to `true` to fetch libraries
+declared by all the packages in your project. Only the first declaration of the 
+library is ever used, so if you find that multiple packages require different
+versions of the same library, you can declare the correct version in the 
+project's `composer.json`.
+
+```json
+{
+    "extra": {
+        "drupal-libraries-dependencies": true
+    }
+}
+```
+
+Alternatively you can restrict it to specific packages (recommended) by setting
+it to an array of packages which you'd like to pull in libraries for.
+
+```json
+{
+    "extra": {
+        "drupal-libraries-dependencies": [
+          "drupal/project1",
+          "drupal/project2"
+        ]
+    }
+}
+```
+
+## How to reference an npm package.
+
+For example, if you're interested in downloading version 2.25.0 of the 
+[`moment`](https://www.npmjs.com/package/moment) npm package.
+
+- Run `npm view moment@2.25.0`.
+- Use the `.tarball` value as the library `url`.
+- Use the `.shasum` value as the library `shasum`.
 
 ## How to Reference a GitHub Repo as a ZIP File
 
@@ -90,10 +178,6 @@ exact same version of the library.
 
 ## Notes
 
-- Only ZIP files are supported at this time.
-- This plugin is meant to be used with a root package only (i.e. a Drupal site repo)
-and will not find libraries listed in the `composer.json` files of dependencies
-(e.g. contrib modules).
 - This plugin is essentially a shortcut for explicitly declaring the composer package
 information for each library zip you need to include in your project, e.g.:
     ```json
@@ -134,8 +218,6 @@ no way to install these packages directly into the proper /libraries/ folder wit
 As well, modules will often list their external library requirements as links to ZIP
 distribution files or GitHub repos, making it easier to reference and pull in these
 dependencies in that manner with this plugin.
-- This plugin is intended only as a short-term solution for the broader issue of
-external library dependency management among modules and themes.
 
 [composer]: https://getcomposer.org/
 [npm]: https://www.npmjs.com/

@@ -1,2 +1,4 @@
+# libraries lock file
+/installed-libraries.json
 # composer artifacts
 /vendor/
