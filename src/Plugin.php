@@ -25,6 +25,20 @@ class Plugin implements PluginInterface, EventSubscriberInterface {
   }
 
   /**
+   * Called when the composer plugin is deactivated.
+   */
+  public function deactivate(Composer $composer, IOInterface $io) {
+    // no deactivation steps required
+  }
+
+  /**
+   * Called when the composer plugin is uninstalled.
+   */
+  public function uninstall(Composer $composer, IOInterface $io) {
+    // no uninstall steps required
+  }
+
+  /**
    * Instruct the plugin manager to subscribe us to these events.
    */
   public static function getSubscribedEvents() {
