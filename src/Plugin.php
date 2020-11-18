@@ -25,6 +25,20 @@ class Plugin implements PluginInterface, EventSubscriberInterface {
   }
 
   /**
+   * Called when the composer plugin is deactivated.
+   */
+  public function deactivate(Composer $composer, IOInterface $io) {
+    // no deactivation steps required
+  }
+
+  /**
+   * Called when the composer plugin is uninstalled.
+   */
+  public function uninstall(Composer $composer, IOInterface $io) {
+    // no uninstall steps required
+  }
+
+  /**
    * Instruct the plugin manager to subscribe us to these events.
    */
   public static function getSubscribedEvents() {
@@ -63,7 +77,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface {
       $package->setDistUrl($url);
       $package->setType(static::TYPE);
       // let composer download and unpack the library for us!
-      $downloadManager->download($package, $installationManager->getInstallPath($package));
+      $targetDir = $installationManager->getInstallPath($package);
+      $downloadManager->download($package, $targetDir);
+      $downloadManager->install($package, $targetDir);
     }
   }
 
