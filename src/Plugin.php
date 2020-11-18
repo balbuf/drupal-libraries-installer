@@ -77,7 +77,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface {
       $package->setDistUrl($url);
       $package->setType(static::TYPE);
       // let composer download and unpack the library for us!
-      $downloadManager->download($package, $installationManager->getInstallPath($package));
+      $targetDir = $installationManager->getInstallPath($package);
+      $downloadManager->download($package, $targetDir);
+      $downloadManager->install($package, $targetDir);
     }
   }
 
